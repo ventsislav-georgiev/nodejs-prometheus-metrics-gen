@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: nodejs-prometheus-metrics-gen
+  name: nodejs-prometheus-metrics-gen
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: nodejs-prometheus-metrics-gen
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: nodejs-prometheus-metrics-gen
+        component: nodejs-prometheus-metrics-gen
+    spec:
+      containers:
+      - image: ventsislavg/nodejs-prometheus-metrics-gen:latest
+        imagePullPolicy: Always
+        name: nodejs-prometheus-metrics-gen
+        ports:
+        - containerPort: 1667
+        env:
+        - name: VAR_TYPE
+          value: Counter
+        - name: VAR_METRICS
+          value: "1"
+        - name: VAR_LABELS
+          value: "2"
+        - name: VAR_FIRST_LABEL_VALUES
+          value: "3000"
+        - name: VAR_OTHER_LABEL_VALUES
+          value: "10"
+        - name: VAR_EVENTS
+          value: "1"
+        - name: VAR_INTERVAL_SECONDS
+          value: "10"
+        - name: VAR_METRIC_NAME
+          value: metric
+        - name: VAR_LABEL_NAME
+          value: metric_label
+        - name: VAR_LABEL_VALUE
+          value: metric_label_value
+        resources:
+          requests:
+            cpu: 600m
+            memory: 400Mi
+          limits:
+            cpu: 600m
+            memory: 400Mi
